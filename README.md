@@ -22,7 +22,7 @@ The application is built using **Object-Oriented Programming (OOP) principles** 
 ---
 
 ## 📊 UML Class Diagram
-![UML Diagram](./docs/SmartRoutine_UML.png)
+![UML Diagram](./docs/UML_Diagram.png)
 
 ---
 ## 👨‍💻 Author
