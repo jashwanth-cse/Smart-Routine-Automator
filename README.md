@@ -21,6 +21,10 @@ The application is built using **Object-Oriented Programming (OOP) principles** 
 
 ---
 
+## 📊 UML Class Diagram
+![UML Diagram](./docs/SmartRoutine_UML.png)
+
+---
 ## 👨‍💻 Author
 Developed by Jashwanth J
 Sri Eshwar College of Engineering
