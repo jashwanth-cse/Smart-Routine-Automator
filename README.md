@@ -17,4 +17,10 @@ The application is built using **Object-Oriented Programming (OOP) principles** 
 - JavaFX (UI)  
 - Quartz Scheduler (Task scheduling)  
 - SQLite/MySQL (Data persistence)  
-- GitHub (Version control)  
+- GitHub (Version control)
+
+---
+
+## 👨‍💻 Author
+Developed by Jashwanth J
+Sri Eshwar College of Engineering
