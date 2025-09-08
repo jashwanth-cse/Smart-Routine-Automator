@@ -1,7 +1,9 @@
 package com.smartroutine;
-import com.smartroutine.utils.ProgramFetcher;
 import com.smartroutine.model.*;
+import com.smartroutine.utils.ProgramFetcher;
+import com.smartroutine.utils.ProgramInfo;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
@@ -65,22 +67,31 @@ public class Main {
 
             switch (actionChoice) {
                 case 1 -> {
-                        List<String> installed = ProgramFetcher.getInstalledPrograms();
-                        if (installed.isEmpty()) {
-                            System.out.println("No programs found.");
-                            break;
-                        }
+    List<ProgramInfo> installed = ProgramFetcher.getInstalledPrograms();
+    if (installed.isEmpty()) {
+        System.out.println("No programs found.");
+        break;
+    }
 
-                        for (int i = 0; i < installed.size(); i++) {
-                            System.out.println((i + 1) + ". " + installed.get(i));
-                        }
-                        System.out.print("Choose a program: ");
-                        int progChoice = scanner.nextInt();
-                        scanner.nextLine();
+    // Show only display names
+    for (int i = 0; i < installed.size(); i++) {
+        System.out.println((i + 1) + ". " + installed.get(i).getName());
+    }
+    System.out.print("Choose a program: ");
+    int progChoice = scanner.nextInt();
+    scanner.nextLine();
 
-                        String programName = installed.get(progChoice - 1);
-                        routine.addAction(new AppAction(programName, programName));
-                    }
+    if (progChoice < 1 || progChoice > installed.size()) {
+        System.out.println("Invalid choice!");
+        break;
+    }
+
+    ProgramInfo selectedProgram = installed.get(progChoice - 1);
+
+    // Add AppAction to the current routine
+    routine.addAction(new AppAction(selectedProgram.getName(), selectedProgram.getFullPath()));
+}
+
                 case 2 -> {
                     System.out.print("Enter website URL: ");
                     String url = scanner.nextLine();
@@ -105,14 +116,22 @@ public class Main {
         System.out.println("Routine added successfully!");
     }
 
-    private static void executeRoutines() {
-        for (Routine routine : routines) {
-            if (routine.getTrigger().isTriggered()) {
-                routine.execute();
-            } else {
-                System.out.println("Skipping routine: " + routine.getName() +
-                        " (Scheduled for " + routine.getTrigger().getTime() + ")");
-            }
+
+        private static void executeRoutines() {
+            System.out.println("Starting scheduler... (press Ctrl+C to stop)");
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+            scheduler.scheduleAtFixedRate(() -> {
+                for (Routine routine : routines) {
+                    if (routine.getTrigger().isTriggered()) {
+                        System.out.println("Executing routine: " + routine.getName());
+                        routine.execute();
+                    } else {
+                        System.out.println("Waiting for: " + routine.getName() +
+                                " (Scheduled for " + routine.getTrigger().getTime() + ")");
+                    }
+                }
+            }, 0, 1, TimeUnit.MINUTES); // checks every 1 minute
+
         }
-    }
 }
