@@ -102,11 +102,49 @@ public class Main {
                     String text = scanner.nextLine();
                     routine.addAction(new ReminderAction("Reminder", text));
                 }
-                case 4 -> {
-                    System.out.print("Enter system command: ");
-                    String cmd = scanner.nextLine();
-                    routine.addAction(new SystemAction("System Command", cmd));
+                        case 4 -> {
+            System.out.print("Enter admin password to continue: ");
+            String pwd = scanner.nextLine();
+            if (!pwd.equals("1234")) {  // hardcoded password for now
+                System.out.println("Incorrect password! Access denied.");
+                break;
+            }
+
+            System.out.println("Select System Action:");
+            System.out.println("1. Shutdown");
+            System.out.println("2. Restart");
+            System.out.println("3. Logoff");
+            System.out.println("4. Sleep");
+            System.out.println("5. Lock");
+            int sysChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            String sysCommand = switch (sysChoice) {
+                case 1 -> "shutdown";
+                case 2 -> "restart";
+                case 3 -> "logoff";
+                case 4 -> "sleep";
+                case 5 -> "lock";
+                default -> "";
+            };
+
+            // Add confirmation for critical actions
+            if (sysCommand.equals("shutdown") || sysCommand.equals("restart") || sysCommand.equals("logoff")) {
+                System.out.print("⚠️ Are you sure you want to " + sysCommand + "? (Y/N): ");
+                String confirm = scanner.nextLine().trim().toLowerCase();
+                if (!confirm.equals("y")) {
+                    System.out.println("System action cancelled.");
+                    break;
                 }
+            }
+
+            if (!sysCommand.isEmpty()) {
+                routine.addAction(new SystemAction("System Command", sysCommand));
+            } else {
+                System.out.println("Invalid option!");
+            }
+        }
+
                 case 5 -> adding = false;
                 default -> System.out.println("Invalid choice!");
             }
